@@ -1,0 +1,94 @@
+﻿@model CineEase2.Models.Actor
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Actors</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ActorName" class="control-label"></label>
+                <input asp-for="ActorName" class="form-control" />
+                <span asp-validation-for="ActorName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActorSurname" class="control-label"></label>
+                <input asp-for="ActorSurname" class="form-control" />
+                <span asp-validation-for="ActorSurname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActorAge" class="control-label"></label>
+                <input asp-for="ActorAge" class="form-control" />
+                <span asp-validation-for="ActorAge" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nationality" class="control-label"></label>
+                <select asp-for="Nationality" class="form-control">
+                    <option value="">-- Select Country --</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="China">China</option>
+                    <option value="Russia">Russia</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="India">India</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="Iran">Iran</option>
+                    <option value="Iraq">Iraq</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Vietnam">Vietnam</option>
+                </select>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Follower" class="control-label"></label>
+                <input asp-for="Follower" class="form-control" />
+                <span asp-validation-for="Follower" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Movie" class="control-label"></label>
+                <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
