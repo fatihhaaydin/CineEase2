@@ -18,6 +18,18 @@ namespace CineEase2.Controllers
             return View();
         }
 
+        public IActionResult Details(int photoId)
+        {
+            ViewData["PhotoId"] = photoId;
+            return View("~/Views/Home/Details.cshtml");
+        }
+
+        public IActionResult Buy(int photoId)
+        {
+            ViewData["PhotoId"] = photoId;
+            return View("~/Views/Home/Buy.cshtml");
+        }
+
         public IActionResult Privacy()
         {
             return View();

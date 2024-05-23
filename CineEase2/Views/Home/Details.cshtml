@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Photo Details";
+    int photoId = (int)ViewData["PhotoId"];
+}
+
+<h1 id="photoTitle"></h1>
+<img id="detailPhoto" src="" alt="Detailed View">
+<p id="photoDescription"></p>
+<p id="photoDate"></p>
+<button id="buyButton">Buy Photo</button>
+
+@section Scripts {
+    <style>
+        #detailPhoto {
+            width: 600px;
+            height: 350px;
+            float: left; /* Resmi sola hizala */
+            margin-right: 20px; /* Resmin sağında boşluk bırak */
+        }
+
+        #photoDetails {
+            overflow: hidden; /* İçeriklerin resmin dışına taşmasını önle */
+        }
+    </style>
+    <script>
+        const photoDetails = {
+            1: {
+                title: "GoodFellas",
+                description: "Description of Photo 1",
+                image: "goodfellas-widescreen-cover-nqvb6c5yyzv0ldcy.jpg"
+            },
+            2: {
+                title: "Interstaller",
+                description: "Description of Photo 2",
+                image: "hq720.jpg"
+            },
+            3: {
+                title: "The Dark Night",
+                description: "Description of Photo 3",
+                image: "knight.jpg"
+            },
+            4: {
+                title: "The Godfather",
+                description: "Description of Photo 4",
+                image: "the-godfather-banner.png"
+            },
+            5: {
+                title: "The Shawshank Redemption",
+                description: "Description of Photo 5",
+                image: "aaaabwgikujv_s53_ieu23nsbmagxt2rd-0seej4zvpl2ovfhl3h2xxozum2wthinjergwj-m_jeyhl0eoms2nxmdxtyrddjxs11u8fg.jpg"
+            },
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const photoId = @photoId;
+            console.log(photoId)
+            const detail = photoDetails[photoId];
+
+            // detail nesnesinin tanımlı olup olmadığını kontrol et
+            if (detail) {
+                const imagePath = `/Images/${detail.image}`;
+                document.getElementById('detailPhoto').src = imagePath;
+                document.getElementById('photoTitle').innerText = detail.title;
+                document.getElementById('photoDescription').innerText = detail.description;
+                document.getElementById('photoDate').innerText = detail.date;
+
+                document.getElementById('buyButton').addEventListener('click', function () {
+                    window.location.href = `/Home/Buy?photoId=${photoId}`;
+                });
+            } else {
+                console.error('Belirtilen photoId için detay bulunamadı.');
+            }
+        });
+    </script>
+}
+
