@@ -5,7 +5,18 @@
 }
 
 <h1>Details</h1>
-
+<style>
+    .create-button {
+        background-color: black;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+</style>
 <div>
     <h4>Movie</h4>
     <hr />
@@ -49,6 +60,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="create-button">Edit</a>
+    <a asp-action="Index" class="create-button">Back to List</a>
 </div>

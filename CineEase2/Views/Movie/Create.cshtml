@@ -7,18 +7,30 @@
 <h1>Create</h1>
 
 <h4>Movie</h4>
+<style>
+    .create-button {
+        background-color: black;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+</style>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="MovieName" class="control-label"></label>
+                <label asp-for="MovieName" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="MovieName" class="form-control" />
                 <span asp-validation-for="MovieName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Genre" class="control-label"></label>
+                <label asp-for="Genre" class="control-label" style="font-weight:bold"></label>
                 <select asp-for="Genre" class="form-control">
                     <option value="">-- Select Genre --</option>
                     <option value="Action">Action</option>
@@ -40,22 +52,22 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="IMDB_Score" class="control-label"></label>
+                <label asp-for="IMDB_Score" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="IMDB_Score" class="form-control" />
                 <span asp-validation-for="IMDB_Score" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
+                <label asp-for="Duration" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReleaseYear" class="control-label"></label>
+                <label asp-for="ReleaseYear" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="ReleaseYear" class="form-control" />
                 <span asp-validation-for="ReleaseYear" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
+                <label asp-for="Rating" class="control-label" style="font-weight:bold"></label>
                 <select asp-for="Rating" class="form-control">
                     <option value="">-- Select Rating --</option>
                     <option value="G">G (General Audience)</option>
@@ -66,12 +78,12 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="create-button" style="margin-top: 10px" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="create-button" style="margin-top: 20px">Back to List</a>
 </div>

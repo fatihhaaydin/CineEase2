@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CineEase</title>
+    <title>@(ViewData["Title"] ?? "CineEase")</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CineEase2.styles.css" asp-append-version="true" />
@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-secondary border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a asp-controller ="Home" asp-action="Index">
+                <a asp-controller="Home" asp-action="Index">
                     <img src="~/images/ekran görüntüsü 2024-05-22 120052.png" style="width: 130px;height:100px">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -29,7 +29,7 @@
                         </li>
                     </ul>
                     <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                        <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+                        <input id="searchInput" type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
                     </form>
                     <partial name="_LoginPartial" />
                 </div>
@@ -50,6 +50,41 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#searchInput').on('input', function () {
+                doneTyping();
+            });
+
+            function doneTyping() {
+                var searchText = $('#searchInput').val().toLowerCase(); // Küçük harfe çevir
+                console.log(searchText);
+                $('.clickable-photo').each(function () {
+                    if (searchText === "goodfellas" || searchText === "the shawshank redemption" || searchText === "the godfather" || searchText === "the dark night" || searchText === "interstaller") {
+                        var photoId = $(this).attr('data-id');
+                        console.log("PhotoID = " + photoId);
+                        var photoDetail = photoDetails[photoId];
+                        console.log("Photo Detail = ", photoDetail);
+                        console.log(photoDetail.title.toLowerCase())
+                        if (searchText == photoDetail.title.toLowerCase()) {
+                            var photoTitle = photoDetail.title.toLowerCase(); // Küçük harfe çevir
+                            console.log("If içindeki phototitle", photoTitle)
+                            console.log("If içindeki photoid", photoId)
+                            if (photoTitle.includes(searchText)) {
+                                console.log("içindeyim")
+                                $('#searchInput').on('keydown', function (event) {
+                                    console.log("ikinci içindeyim")
+                                    window.location.href = `/Home/Details?photoId=${photoId}`;
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        $('#searchInput').val('');
+
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

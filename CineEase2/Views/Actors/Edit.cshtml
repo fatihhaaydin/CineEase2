@@ -7,6 +7,18 @@
 <h1>Edit</h1>
 
 <h4>Actors</h4>
+<style>
+    .create-button {
+        background-color: black;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+</style>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,42 +26,42 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="ActorName" class="control-label"></label>
+                <label asp-for="ActorName" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="ActorName" class="form-control" />
                 <span asp-validation-for="ActorName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActorSurname" class="control-label"></label>
+                <label asp-for="ActorSurname" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="ActorSurname" class="form-control" />
                 <span asp-validation-for="ActorSurname" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActorAge" class="control-label"></label>
+                <label asp-for="ActorAge" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="ActorAge" class="form-control" />
                 <span asp-validation-for="ActorAge" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Nationality" class="control-label"></label>
+                <label asp-for="Nationality" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="Nationality" class="form-control" />
                 <span asp-validation-for="Nationality" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Follower" class="control-label"></label>
+                <label asp-for="Follower" class="control-label" style="font-weight:bold"></label>
                 <input asp-for="Follower" class="form-control" />
                 <span asp-validation-for="Follower" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MovieId" class="control-label"></label>
+                <label asp-for="MovieId" class="control-label" style="font-weight:bold"></label>
                 <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="create-button" style="margin-top: 10px" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="create-button" style="margin-top: 20px">Back to List</a>
 </div>
 

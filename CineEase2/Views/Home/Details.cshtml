@@ -6,51 +6,88 @@
 <h1 id="photoTitle"></h1>
 <img id="detailPhoto" src="" alt="Detailed View">
 <p id="photoDescription"></p>
-<p id="photoDate"></p>
-<button id="buyButton">Buy Photo</button>
+<p><strong id="photoCastLabel">Cast: </strong><span id="photoCast"></span></p>
+<button id="buyButton">Buy Ticket</button>
 
 @section Scripts {
     <style>
         #detailPhoto {
             width: 600px;
             height: 350px;
-            float: left; /* Resmi sola hizala */
-            margin-right: 20px; /* Resmin sağında boşluk bırak */
+            float: left;
+            margin-right: 20px;
         }
 
         #photoDetails {
-            overflow: hidden; /* İçeriklerin resmin dışına taşmasını önle */
+            overflow: hidden;
+        }
+        #buyButton{
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 40px;
         }
     </style>
     <script>
         const photoDetails = {
             1: {
                 title: "GoodFellas",
-                description: "Description of Photo 1",
+                description: "Goodfellas goes beyond a typical gangster story to explore the inner workings of organized crime, focusing on themes of loyalty, betrayal, and the seductive allure of power. Martin Scorsese's direction is character-driven, featuring dynamic pacing and a detailed narrative. The film's style is marked by its use of music, rapid editing, and long tracking shots, such as the famous Copa Cabana sequence.",
+                cast: "Brad	Pitt",
                 image: "goodfellas-widescreen-cover-nqvb6c5yyzv0ldcy.jpg"
             },
             2: {
                 title: "Interstaller",
-                description: "Description of Photo 2",
+                description: "Interstellar delves into complex scientific concepts such as wormholes, black holes, and relativity, while also exploring profound emotional and philosophical questions about love, sacrifice, and the human spirit. Christopher Nolan's direction is marked by visually stunning imagery, realistic depictions of space, and a meticulous attention to scientific detail, which was achieved with the help of physicist Kip Thorne. Hans Zimmer's haunting and evocative score adds to the film's epic and emotional atmosphere.",
+                cast: "Scarlett	Johansson, Kıvanç Tatlıtuğ",
                 image: "hq720.jpg"
             },
             3: {
                 title: "The Dark Night",
-                description: "Description of Photo 3",
+                description: "The Dark Knight delves into themes of chaos versus order, the nature of heroism, and the ethical dilemmas faced by individuals in positions of power. The film presents a complex moral landscape where the lines between good and evil are blurred. The Joker embodies pure chaos and challenges the moral integrity of Gotham’s citizens and its heroes, forcing them to confront their own principles.",
+                cast: "Denzel Washington",
                 image: "knight.jpg"
             },
             4: {
                 title: "The Godfather",
-                description: "Description of Photo 4",
+                description: "The Godfather, explores themes of power, family, loyalty, and corruption. The film delves into the moral complexities and human costs of organized crime, portraying the mafia not just as a criminal organization but as a tightly-knit family with its own code of ethics.",
+                cast: "Will	Smith",
                 image: "the-godfather-banner.png"
             },
             5: {
                 title: "The Shawshank Redemption",
-                description: "Description of Photo 5",
+                description: "The Shawshank Redemption, explores themes of hope, friendship, and redemption within the confines of a brutal prison environment. The film tells the story of Andy Dufresne, a banker who is wrongly convicted of murdering his wife and her lover, and his enduring friendship with fellow inmate Ellis Red Redding.",
+                cast: "Tom Hanks",
                 image: "aaaabwgikujv_s53_ieu23nsbmagxt2rd-0seej4zvpl2ovfhl3h2xxozum2wthinjergwj-m_jeyhl0eoms2nxmdxtyrddjxs11u8fg.jpg"
             },
         };
-
+        function doneTyping() {
+            var searchText = $('#searchInput').val().toLowerCase(); // Küçük harfe çevir
+            console.log(searchText);
+            $('.clickable-photo').each(function () {
+                if (searchText === "goodfellas" || searchText === "the shawshank redemption" || searchText === "the godfather" || searchText === "the dark night" || searchText === "interstaller") {
+                    var photoId = $(this).attr('data-id');
+                    console.log("PhotoID = " + photoId);
+                    var photoDetail = photoDetails[photoId];
+                    console.log("Photo Detail = ", photoDetail);
+                    console.log(photoDetail.title.toLowerCase())
+                    if (searchText == photoDetail.title.toLowerCase()) {
+                        var photoTitle = photoDetail.title.toLowerCase(); // Küçük harfe çevir
+                        console.log("If içindeki phototitle", photoTitle)
+                        console.log("If içindeki photoid", photoId)
+                        if (photoTitle.includes(searchText)) {
+                            console.log("içindeyim")
+                            $('#searchInput').on('keydown', function (event) {
+                                console.log("ikinci içindeyim")
+                                window.location.href = `/Home/Details?photoId=${photoId}`;
+                            });
+                        }
+                    }
+                }
+            });
+        }
         document.addEventListener('DOMContentLoaded', function () {
             const photoId = @photoId;
             console.log(photoId)
@@ -62,8 +99,7 @@
                 document.getElementById('detailPhoto').src = imagePath;
                 document.getElementById('photoTitle').innerText = detail.title;
                 document.getElementById('photoDescription').innerText = detail.description;
-                document.getElementById('photoDate').innerText = detail.date;
-
+                document.getElementById('photoCast').innerText = `${detail.cast}`;
                 document.getElementById('buyButton').addEventListener('click', function () {
                     window.location.href = `/Home/Buy?photoId=${photoId}`;
                 });
