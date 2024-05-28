@@ -1,0 +1,17 @@
+﻿@model PaymentViewModel
+
+<h2>Payment Confirmation</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}
+
+<div>
+    <label>Orijinal Fiyat: </label>
+    <span>@Model.Ticket.price.ToString("C")</span>
+</div>
+<div>
+    <label>Net Fiyat: </label>
+    <span>@Model.Ticket.netprice.ToString("C")</span>
+</div>

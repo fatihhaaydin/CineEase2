@@ -7,7 +7,7 @@
 <img id="detailPhoto" src="" alt="Detailed View">
 <p id="photoDescription"></p>
 <p><strong id="photoCastLabel">Cast: </strong><span id="photoCast"></span></p>
-<button id="buyButton">Buy Ticket</button>
+<a id="buyButton">Buy Ticket</a>
 
 @section Scripts {
     <style>
@@ -90,8 +90,9 @@
         }
         document.addEventListener('DOMContentLoaded', function () {
             const photoId = @photoId;
-            console.log(photoId)
             const detail = photoDetails[photoId];
+            document.getElementById('photoTitle').innerText = detail.title;
+            const titlefor = detail.title;
 
             // detail nesnesinin tanımlı olup olmadığını kontrol et
             if (detail) {
@@ -101,8 +102,9 @@
                 document.getElementById('photoDescription').innerText = detail.description;
                 document.getElementById('photoCast').innerText = `${detail.cast}`;
                 document.getElementById('buyButton').addEventListener('click', function () {
-                    window.location.href = `/Home/Buy?photoId=${photoId}`;
+                    window.location.href = `/Payment/Index`;
                 });
+
             } else {
                 console.error('Belirtilen photoId için detay bulunamadı.');
             }

@@ -1,0 +1,81 @@
+﻿@model PaymentViewModel
+
+
+<h2 id="pageTitle"></h2>
+<h2 style="display: inline-block;">Payment </h2>
+<h4 id="paymentTitle" style="display: inline-block;"></h4>
+<h3 style="display: inline-block; margin-left: 530px;">Ödeme Bilgileri</h3>
+
+<div style="display: flex;">
+    <div style="flex: 1; margin-right: 10px;">
+        <form asp-action="ProcessPayment" method="post">
+            <table class="table table-bordered" style="border-color:black">
+                <tbody>
+                    <tr>
+                        <th>Fiyat:</th>
+                        <td><span id="priceLabel">@Model.Ticket.price.ToString("C")</span></td>
+                    </tr>
+                    <tr>
+                        <th>İndirim Türü:</th>
+                        <td>
+                            <select id="discountDropdown" asp-for="Ticket.discount" asp-items="ViewBag.DiscountTypes" style="background-color:darkcyan"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>İndirim Bilgisi:</th>
+                        <td><div id="discountInfo" style="margin-top: 5px;"></div></td>
+                    </tr>
+                    <tr>
+                        <th>Net Fiyat:</th>
+                        <td><span id="netPriceLabel">@Model.Ticket.price.ToString("C")</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div style="flex: 1;">
+        <table class="table table-bordered" style="border-color:black">
+            <tbody>
+                <tr>
+                    <th>Kredi Kartı Numarası:</th>
+                    <td><input asp-for="CreditCardNumber" /></td>
+                </tr>
+                <tr>
+                    <th>Son Kullanma Tarihi:</th>
+                    <td><input asp-for="ExpirationDate" /></td>
+                </tr>
+                <tr>
+                    <th>CVV:</th>
+                    <td><input asp-for="CVV" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" style="margin-left: 530px;background-color:black;color:white;">Ödeme Yap</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("discountDropdown").addEventListener("change", function () {
+            var selectedDiscount = this.value;
+            var discountInfo = document.getElementById("discountInfo");
+            var netPriceLabel = document.getElementById("netPriceLabel");
+            var price = parseFloat('@Model.Ticket.price');
+
+            if (selectedDiscount === "Student") {
+                discountInfo.innerHTML = "<p>Öğrenci indirimi: %20</p>";
+                document.getElementById('pageTitle').innerText = titlefor;
+                conole.log(titlefor);
+                netPriceLabel.textContent = (price * 0.8).toFixed(2);
+            } else if (selectedDiscount === "Senior") {
+                discountInfo.innerHTML = "<p>Yaşlı indirimi: %15</p>";
+                netPriceLabel.textContent = (price * 0.85).toFixed(2);
+            } else {
+                discountInfo.innerHTML = "";
+                netPriceLabel.textContent = price.toFixed(2);
+            }
+        });
+    </script>
+}
+
