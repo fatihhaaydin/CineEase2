@@ -3,16 +3,22 @@ using CineEase2.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace CineEase2.Controllers
 {
+    using Microsoft.AspNetCore.Identity;
+
     public class PaymentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PaymentController(ApplicationDbContext context)
+        public PaymentController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -34,8 +40,12 @@ namespace CineEase2.Controllers
         [HttpPost]
         public async Task<IActionResult> ProcessPayment(PaymentViewModel model)
         {
+            bool isPaymentSuccessful = false;
             if (ModelState.IsValid)
             {
+                // Kullanıcının kimliğini al
+                var user = await _userManager.GetUserAsync(User);
+
                 // İndirim hesaplama
                 if (model.Ticket.discount == "Student")
                 {
@@ -45,25 +55,26 @@ namespace CineEase2.Controllers
                 {
                     model.Ticket.netprice = model.Ticket.price * 0.85f; // %15 yaşlı indirimi
                 }
-                else
+                else if (model.Ticket.discount == "Küçük")
+                {
+                    model.Ticket.netprice = model.Ticket.price * 0.65f; // %35 küçük indirimi
+                }
+                else if (model.Ticket.discount == "Yetişkin")
                 {
                     model.Ticket.netprice = model.Ticket.price;
                 }
 
-                // Ödeme başarılıysa bilet detaylarını veritabanına kaydedelim
+                // Kullanıcının Id'sini Ticket nesnesine ata
+                model.Ticket.UserId = user.Id;
+
                 _context.Ticket.Add(model.Ticket);
                 await _context.SaveChangesAsync();
-
-                // Seçilen indirim seçeneği ve uygulanan indirimi göster
-                ViewBag.SelectedDiscount = model.Ticket.discount;
-                ViewBag.AppliedDiscount = model.Ticket.netprice != model.Ticket.price ? model.Ticket.netprice : 0.0f;
-
-                ViewBag.Message = "Payment Successful!";
-                return View("Confirmation", model);
+                TempData["PaymentSuccess"] = "Ödeme başarıyla gerçekleştirildi.";
+                isPaymentSuccessful = true;
+                return RedirectToAction("Index", "Ticket");
             }
 
-            ViewBag.DiscountTypes = GetDiscountTypes();
-            return View("Index", model);
+            return Json(new { success = isPaymentSuccessful, message = "Ödeme başarısız. Lütfen tekrar deneyin." });
         }
 
         private List<SelectListItem> GetDiscountTypes()
@@ -72,7 +83,9 @@ namespace CineEase2.Controllers
         {
             new SelectListItem { Value = "", Text = "Seçiniz" },
             new SelectListItem { Value = "Student", Text = "Öğrenci" },
-            new SelectListItem { Value = "Senior", Text = "Yaşlı" }
+            new SelectListItem { Value = "Senior", Text = "65 yaş üstü" },
+            new SelectListItem { Value = "Küçük", Text = "7 yaş altı" },
+            new SelectListItem { Value = "Yetişkin", Text = "Yetişkin" }
         };
         }
     }

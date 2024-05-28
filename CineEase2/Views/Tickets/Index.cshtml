@@ -1,11 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<User> SignInManager
 @model IEnumerable<CineEase2.Models.Ticket>
-
 @{
     ViewData["Title"] = "Index";
 }
 
+@if (TempData["PaymentSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        Ödemeniz başarıyla gerçekleştirildi.
+    </div>
+}
+
+<a asp-controller="Payment" asp-action="Index" class="btn btn-primary">Başka bir işlem yap</a>
 <h1>Index</h1>
 @if(SignInManager.IsSignedIn(User)){
     <p>
