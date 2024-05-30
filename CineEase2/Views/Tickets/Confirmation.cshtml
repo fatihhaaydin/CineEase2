@@ -1,4 +1,4 @@
-﻿@model PaymentViewModel
+﻿@model Ticket
 
 <h2>Payment Confirmation</h2>
 
@@ -9,9 +9,16 @@
 
 <div>
     <label>Orijinal Fiyat: </label>
-    <span>@Model.Ticket.price.ToString("C")</span>
+    <span>@Model.price.ToString("C")</span>
 </div>
 <div>
     <label>Net Fiyat: </label>
-    <span>@Model.Ticket.netprice.ToString("C")</span>
+    <span>@Model.netprice.ToString("C")</span>
 </div>
+
+
+
+
+
+
+

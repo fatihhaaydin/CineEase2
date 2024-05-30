@@ -9,43 +9,28 @@ using CineEase2.Data;
 using CineEase2.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Identity;
 
 namespace CineEase2.Controllers
 {
+    using Microsoft.AspNetCore.Identity;
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TicketsController(ApplicationDbContext context)
+        public TicketsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Ticket.Include(t => t.User);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.Ticket.ToListAsync());
         }
 
-        // GET: Tickets/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Ticket
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return View(ticket);
-        }
         [Authorize]
         // GET: Tickets/Create
         public IActionResult Create()
@@ -59,111 +44,45 @@ namespace CineEase2.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,price,discount,netprice,UserId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,price,discount,netprice,CreditCardNumber,ExpirationDate,CVV,UserId")] Ticket model)
         {
-            var userticket = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
-            ticket.UserId = userticket.Id;
-            _context.Add(ticket);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Tickets/Edit/5
-        [Authorize]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-            var userID = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name)?.Id;
-            if (ticket.UserId != userID)
-            {
-                return Unauthorized();
-            }
-            return View(ticket);
-        }
-
-        // POST: Tickets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-
-        public async Task<IActionResult> Edit(int id, [Bind("Id,price,discount,netprice,UserId")] Ticket ticket)
-        {
-            if (id != ticket.Id)
-            {
-                return NotFound();
-            }
+            bool isPaymentSuccessful = false;
 
             if (ModelState.IsValid)
             {
-                try
+                // Kullanıcının kimliğini al
+                var user = await _userManager.GetUserAsync(User);
+
+                // İndirim hesaplama
+                if (model.discount == "Öğrenci")
                 {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
+                    model.netprice = model.price * 0.8f; // %20 öğrenci indirimi
                 }
-                catch (DbUpdateConcurrencyException)
+                else if (model.discount == "65 yaş üstü")
                 {
-                    if (!TicketExists(ticket.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    model.netprice = model.price * 0.85f; // %15 yaşlı indirimi
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(ticket);
-        }
+                else if (model.discount == "7 yaş altı")
+                {
+                    model.netprice = model.price * 0.65f; // %35 küçük indirimi
+                }
+                else if (model.discount == "Yetişkin")
+                {
+                    model.netprice = model.price;
+                }
 
-        // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+                // Kullanıcının Id'sini Ticket nesnesine ata
+                model.UserId = user.Id;
 
-            var ticket = await _context.Ticket
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
+                _context.Ticket.Add(model);
+                await _context.SaveChangesAsync();
+                TempData["PaymentSuccess"] = "Ödeme başarıyla gerçekleştirildi.";
+                isPaymentSuccessful = true;
+                return Json(new { success = isPaymentSuccessful, message = "Ödeme başarıyla gerçekleştirildi.", netPrice = model.netprice });
             }
 
-            return View(ticket);
-        }
-
-        // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket != null)
-            {
-                _context.Ticket.Remove(ticket);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TicketExists(int id)
-        {
-            return _context.Ticket.Any(e => e.Id == id);
+            return Json(new { success = isPaymentSuccessful, message = "Ödeme başarısız. Lütfen tekrar deneyin." });
         }
     }
 }
+

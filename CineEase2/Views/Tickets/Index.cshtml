@@ -1,28 +1,46 @@
-﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<User> SignInManager
-@model IEnumerable<CineEase2.Models.Ticket>
+﻿@model IEnumerable<CineEase2.Models.Ticket>
 @{
     ViewData["Title"] = "Index";
 }
 
-@if (TempData["PaymentSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        Ödemeniz başarıyla gerçekleştirildi.
-    </div>
-}
-
-<a asp-controller="Payment" asp-action="Index" class="btn btn-primary">Başka bir işlem yap</a>
-<h1>Index</h1>
-@if(SignInManager.IsSignedIn(User)){
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    } else {
-    <p>
-        To Create a blog, you must login!
-    </p>
+<h1>Tickets</h1>
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 3px solid #ddd;
     }
+
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .table td, .table th {
+        font-weight: bold; /* Yazıları kalın yap */
+    }
+
+    .create-button {
+        background-color: black;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+</style>
 <table class="table">
     <thead>
         <tr>
@@ -36,39 +54,40 @@
                 @Html.DisplayNameFor(model => model.netprice)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.CreditCardNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CVV)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">
-
-                @Html.DisplayFor(modelItem => item.price)
-                </a>
-
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.discount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.netprice)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.User.Name) @Html.DisplayFor(modelItem => item.User.Surname)
+                    @Html.DisplayFor(modelItem => item.price)
                 </td>
                 <td>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    }
+                    @Html.DisplayFor(modelItem => item.discount)
                 </td>
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.netprice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreditCardNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CVV)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
