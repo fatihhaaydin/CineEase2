@@ -44,7 +44,7 @@ namespace CineEase2.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,price,discount,netprice,CreditCardNumber,ExpirationDate,CVV,UserId")] Ticket model)
+        public async Task<IActionResult> Create([Bind("Id,price,discount,netprice,CreditCardNumber,ExpirationDate,CVV,UserId,SeatNumber")] Ticket model)
         {
             bool isPaymentSuccessful = false;
 

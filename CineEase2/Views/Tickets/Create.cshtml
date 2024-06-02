@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <table class="table table-bordered" style="border-color:black">
                 <tbody>
@@ -39,6 +39,21 @@
                         <td><label asp-for="netprice" class="control-label" style="font-weight:bold">Net Fiyat</label></td>
                         <td><input id="netprice" asp-for="netprice" class="form-control" readonly style="background-color:black;color:white;" /></td>
                         <td><span asp-validation-for="netprice" class="text-danger"></span></td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="SeatNumber" class="control-label" style="font-weight:bold">Koltuk Seçimi</label></td>
+                        <td>
+                            <div id="seat-selection" class="d-flex flex-wrap">
+                                @for (int seat = 1; seat <= 68; seat++)
+                                {
+                                    <div class="seat" data-seat="@seat" style="width: 30px; height: 30px; margin: 5px; border: 1px solid black; display: inline-block; cursor: pointer; text-align: center; line-height: 30px;">
+                                        @seat
+                                    </div>
+                                }
+                            </div>
+                            <input id="selectedSeat" asp-for="SeatNumber" type="hidden" />
+                        </td>
+                        <td><span asp-validation-for="SeatNumber" class="text-danger"></span></td>
                     </tr>
                     <tr>
                         <td><label asp-for="CreditCardNumber" class="control-label" style="font-weight:bold">Kredi Kartı Numarası</label></td>
@@ -94,12 +109,14 @@
             var discountMessageContainer = document.getElementById("discountMessageContainer");
             discountMessageContainer.innerHTML = "<div class='alert alert-info'>" + discountMessage + "</div>";
         });
+
         document.getElementById("CVV").addEventListener("input", function () {
             this.value = this.value.replace(/\D/g, '');
             if (this.value.length > 3) {
                 this.value = this.value.slice(0, 3);
             }
         });
+
         document.getElementById("ExpirationDate").addEventListener("input", function () {
             var input = this.value.replace(/\D/g, ''); // Sadece sayıları kabul et
             if (input.length > 5) {
@@ -110,8 +127,25 @@
             }
             this.value = input;
         });
+
+        // Seat selection
+        document.querySelectorAll('.seat').forEach(function (seat) {
+            seat.addEventListener('click', function () {
+                document.querySelectorAll('.seat').forEach(function (s) {
+                    s.style.backgroundColor = 'white';
+                });
+                this.style.backgroundColor = 'blue';
+                document.getElementById('selectedSeat').value = this.getAttribute('data-seat');
+            });
+        });
     </script>
+
 }
+
+
+
+
+
 
 
 

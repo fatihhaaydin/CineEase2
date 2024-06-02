@@ -21,15 +21,18 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Movie" asp-action="Index">Movies </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Actors" asp-action="Index">Actors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Tickets" asp-action="Index">Tickets</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Movie" asp-action="Index">Movies </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Actors" asp-action="Index">Actors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Tickets" asp-action="Index">Tickets</a>
+                            </li>
+                        }
                     </ul>
                     <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                         <input id="searchInput" type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
