@@ -44,45 +44,55 @@ namespace CineEase2.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,price,discount,netprice,CreditCardNumber,ExpirationDate,CVV,UserId,SeatNumber")] Ticket model)
+        public async Task<IActionResult> Create([Bind("Id,price,discount,netprice,CreditCardNumber,ExpirationDate,CVV,UserId,SeatNumber,IsSold")] Ticket model)
         {
-            bool isPaymentSuccessful = false;
-
             if (ModelState.IsValid)
             {
-                // Kullanıcının kimliğini al
                 var user = await _userManager.GetUserAsync(User);
 
-                // İndirim hesaplama
                 if (model.discount == "Öğrenci")
                 {
-                    model.netprice = model.price * 0.8f; // %20 öğrenci indirimi
+                    model.netprice = model.price * 0.8f;
                 }
                 else if (model.discount == "65 yaş üstü")
                 {
-                    model.netprice = model.price * 0.85f; // %15 yaşlı indirimi
+                    model.netprice = model.price * 0.85f;
                 }
                 else if (model.discount == "7 yaş altı")
                 {
-                    model.netprice = model.price * 0.65f; // %35 küçük indirimi
+                    model.netprice = model.price * 0.65f;
                 }
                 else if (model.discount == "Yetişkin")
                 {
                     model.netprice = model.price;
                 }
 
-                // Kullanıcının Id'sini Ticket nesnesine ata
                 model.UserId = user.Id;
+                model.IsSold = true;
 
                 _context.Ticket.Add(model);
                 await _context.SaveChangesAsync();
-                TempData["PaymentSuccess"] = "Ödeme başarıyla gerçekleştirildi.";
-                isPaymentSuccessful = true;
-                return Json(new { success = isPaymentSuccessful, message = "Ödeme başarıyla gerçekleştirildi.", netPrice = model.netprice });
-            }
 
-            return Json(new { success = isPaymentSuccessful, message = "Ödeme başarısız. Lütfen tekrar deneyin." });
+                return Json(new { success = true, selectedSeat = model.SeatNumber, message = "Ödeme başarıyla gerçekleştirildi." });
+            }
+            return Json(new { success = false, message = "Ödeme başarısız. Lütfen tekrar deneyin." });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSoldSeats()
+        {
+            // Veritabanından satılan koltukları getirin
+            var soldSeats = await _context.Ticket
+                .Where(t => t.IsSold) // Satılan koltukları filtreleyin
+                .Select(t => t.SeatNumber) // Sadece koltuk numaralarını seçin
+                .ToListAsync();
+
+            return Json(soldSeats); // Satılan koltuk numaralarını JSON olarak döndürün
+        }
+        public IActionResult Success()
+        {
+            return View();
         }
     }
+
 }
 

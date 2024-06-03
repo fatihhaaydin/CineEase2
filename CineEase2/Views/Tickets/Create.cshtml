@@ -9,13 +9,13 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create" method="post">
+        <form id="paymentForm" asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <table class="table table-bordered" style="border-color:black">
                 <tbody>
                     <tr>
                         <td><label asp-for="price" class="control-label" style="font-weight:bold">Fiyat</label></td>
-                        <td><input asp-for="price" class="form-control" readonly value="50.0" style="background-color:black;color:white;" /></td>
+                        <td><input asp-for="price" class="form-control" readonly value="500" style="background-color:black;color:white;" /></td>
                         <td><span asp-validation-for="price" class="text-danger"></span></td>
                     </tr>
                     <tr>
@@ -57,7 +57,7 @@
                     </tr>
                     <tr>
                         <td><label asp-for="CreditCardNumber" class="control-label" style="font-weight:bold">Kredi Kartı Numarası</label></td>
-                        <td><input asp-for="CreditCardNumber" class="form-control" maxlength="16" style="background-color:black;color:white;" /></td>
+                        <td><input id="CreditCardNumber" asp-for="CreditCardNumber" class="form-control" maxlength="19" style="background-color:black;color:white;" /></td>
                         <td><span asp-validation-for="CreditCardNumber" class="text-danger"></span></td>
                     </tr>
                     <tr>
@@ -72,7 +72,7 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td><input type="submit" value="Ödeme Yap" style="background-color:black;color:white;" /></td>
+                        <td><input type="button" value="Ödeme Yap" id="submitBtn" style="background-color:black;color:white;" /></td>
                         <td></td>
                     </tr>
                 </tbody>
@@ -83,9 +83,10 @@
 
 @section Scripts {
     <script>
+        // JavaScript kodunu buraya yapıştırın
         document.getElementById("discount").addEventListener("change", function () {
             var selectedDiscount = this.value;
-            var price = 50.0;
+            var price = 500;
 
             var netPrice;
             var discountMessage;
@@ -128,6 +129,15 @@
             this.value = input;
         });
 
+        document.getElementById("CreditCardNumber").addEventListener("input", function () {
+            var input = this.value.replace(/\D/g, ''); // Sadece sayıları kabul et
+            if (input.length > 16) {
+                input = input.slice(0, 16); // Maksimum 16 karakter olacak şekilde sınırla
+            }
+            var formattedInput = input.match(/.{1,4}/g).join('-'); // Her 4 karakterden sonra "-" ekle
+            this.value = formattedInput;
+        });
+
         // Seat selection
         document.querySelectorAll('.seat').forEach(function (seat) {
             seat.addEventListener('click', function () {
@@ -138,9 +148,84 @@
                 document.getElementById('selectedSeat').value = this.getAttribute('data-seat');
             });
         });
-    </script>
 
+        document.getElementById("submitBtn").addEventListener("click", function () {
+            var requiredFields = ["CreditCardNumber", "ExpirationDate", "CVV", "selectedSeat", "discount"];
+            var emptyFields = requiredFields.filter(function (field) {
+                return !document.getElementById(field).value;
+            });
+
+            if (emptyFields.length > 0) {
+                alert("Lütfen tüm alanları doldurun: " + emptyFields.join(", "));
+            } else {
+                var form = document.getElementById("paymentForm");
+
+                // Submit the form via AJAX
+                var formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        // Ödeme başarılıysa IsSold değerini işaretle
+                        document.getElementById('selectedSeat').value = ''; // Seçilen koltuğu temizle
+                        console.log("data.selectedSeat= ", data.selectedSeat);
+                        var selectedSeat = parseInt(data.selectedSeat); // Seçilen koltuğu al
+                        console.log("SelectedSeat= ", selectedSeat);
+                        if (!isNaN(selectedSeat)) {
+                            // Kırmızı rengi koltuğa uygula
+                            applyRedColorToSeat(selectedSeat);
+                            // Diğer işlemler...
+                        } else {
+                            alert("Geçersiz koltuk numarası!");
+                        }
+                        console.log("ödendi");
+                        window.location.href = '@Url.Action("Success", "Tickets")';
+                    } else {
+                        alert(data.message || "Ödeme başarısız. Lütfen tekrar deneyin.");
+                    }
+                }).catch(error => {
+                    alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+                });
+            }
+        });
+
+        function applyRedColorToSeat(seatNumber) {
+            var seatElement = document.querySelector('.seat[data-seat="' + seatNumber + '"]');
+            if (seatElement) {
+                seatElement.style.backgroundColor = 'red'; // Koltuğun rengini değiştir
+                seatElement.style.pointerEvents = 'none'; // Koltuğun üzerine tıklanmasını engelle
+                localStorage.setItem('selectedSeat', seatNumber); // Seçilen koltuğu yerel depolamaya kaydet
+            } else {
+                console.error("Seçilen koltuk bulunamadı!");
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Veritabanından satılan koltukları al
+            fetch('/Tickets/GetSoldSeats') // Örnek bir controller ve action
+                .then(response => response.json())
+                .then(data => {
+                    // Veritabanından gelen koltuk bilgilerini kullanarak kırmızıya boyayın
+                    data.forEach(seatNumber => {
+                        applyRedColorToSeat(seatNumber);
+                    });
+                })
+                .catch(error => {
+                    console.error('Veritabanından koltuk bilgileri alınamadı:', error);
+                });
+        });
+
+    </script>
 }
+
+
+
+
+
 
 
 

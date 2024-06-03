@@ -7,6 +7,7 @@
         public string discount { get; set; }
         public float netprice { get; set; }
         public int SeatNumber {  get; set; }
+        public bool IsSold { get; set; }
         public string CreditCardNumber { get; set; }
         public string ExpirationDate { get; set; }
         public string CVV { get; set; }
