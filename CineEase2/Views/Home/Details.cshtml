@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Photo Details";
+    ViewData["Title"] = "Movie Details";
     int photoId = (int)ViewData["PhotoId"];
 }
 
@@ -64,9 +64,9 @@
             },
         };
         function doneTyping() {
-            var searchText = $('#searchInput').val().toLowerCase(); // Küçük harfe çevir
+            var searchText = $('#searchInput').val().toLowerCase(); //Searchboxtaki inputu değişkene atıyoruz.
             console.log(searchText);
-            $('.clickable-photo').each(function () {
+            $('.clickable-photo').each(function () { //carouseldeki resimlerin classları clickable-photo
                 if (searchText === "goodfellas" || searchText === "the shawshank redemption" || searchText === "the godfather" || searchText === "the dark night" || searchText === "interstaller") {
                     var photoId = $(this).attr('data-id');
                     console.log("PhotoID = " + photoId);
@@ -74,13 +74,12 @@
                     console.log("Photo Detail = ", photoDetail);
                     console.log(photoDetail.title.toLowerCase())
                     if (searchText == photoDetail.title.toLowerCase()) {
-                        var photoTitle = photoDetail.title.toLowerCase(); // Küçük harfe çevir
+                        var photoTitle = photoDetail.title.toLowerCase();
                         console.log("If içindeki phototitle", photoTitle)
                         console.log("If içindeki photoid", photoId)
                         if (photoTitle.includes(searchText)) {
                             console.log("içindeyim")
                             $('#searchInput').on('keydown', function (event) {
-                                console.log("ikinci içindeyim")
                                 window.location.href = `/Home/Details?photoId=${photoId}`;
                             });
                         }
@@ -94,8 +93,7 @@
             document.getElementById('photoTitle').innerText = detail.title;
             const titlefor = detail.title;
 
-            // detail nesnesinin tanımlı olup olmadığını kontrol et
-            if (detail) {
+            if (detail) { //Detail nesnesinin tanımlı olup olmadığını kontrol ediyoruz
                 const imagePath = `/Images/${detail.image}`;
                 document.getElementById('detailPhoto').src = imagePath;
                 document.getElementById('photoTitle').innerText = detail.title;

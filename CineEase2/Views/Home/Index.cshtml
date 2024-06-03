@@ -70,7 +70,7 @@
             clickablePhotos.forEach(photo => {
                 photo.addEventListener('click', function () {
                     const photoId = this.getAttribute('data-id');
-                    console.log(photoId); // photoId değerini konsola yazdırma
+                    console.log(photoId); // photoId değerini consola yazdırıp kontrol ediyorum.
                     window.location.href = `/Home/Details?photoId=${photoId}`;
                 });
             });

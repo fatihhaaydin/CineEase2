@@ -1,7 +1,7 @@
 ﻿@model CineEase2.Models.Ticket
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Payment";
 }
 
 <h2 id="pageTitle"></h2>
@@ -46,6 +46,7 @@
                             <div id="seat-selection" class="d-flex flex-wrap">
                                 @for (int seat = 1; seat <= 68; seat++)
                                 {
+                                    //Bilet seçimi için yapılan kutucukları burada üretiyoruz.
                                     <div class="seat" data-seat="@seat" style="width: 30px; height: 30px; margin: 5px; border: 1px solid black; display: inline-block; cursor: pointer; text-align: center; line-height: 30px;">
                                         @seat
                                     </div>
@@ -59,6 +60,7 @@
                         <td><label asp-for="CreditCardNumber" class="control-label" style="font-weight:bold">Kredi Kartı Numarası</label></td>
                         <td><input id="CreditCardNumber" asp-for="CreditCardNumber" class="form-control" maxlength="19" style="background-color:black;color:white;" /></td>
                         <td><span asp-validation-for="CreditCardNumber" class="text-danger"></span></td>
+                        <!-- maxlength ler belirledik input kısımlarında -->
                     </tr>
                     <tr>
                         <td><label asp-for="ExpirationDate" class="control-label" style="font-weight:bold">Son Kullanma Tarihi</label></td>
@@ -83,15 +85,14 @@
 
 @section Scripts {
     <script>
-        // JavaScript kodunu buraya yapıştırın
         document.getElementById("discount").addEventListener("change", function () {
             var selectedDiscount = this.value;
-            var price = 500;
+            var price = 500; // price belirledik.
 
             var netPrice;
             var discountMessage;
             if (selectedDiscount === "Öğrenci") {
-                netPrice = price * 0.8;
+                netPrice = price * 0.8; // indirim oranlarına göre hesaplama
                 discountMessage = "Öğrenci indirimi: %20";
             } else if (selectedDiscount === "65 yaş üstü") {
                 netPrice = price * 0.85;
@@ -101,85 +102,80 @@
                 discountMessage = "7 yaş altı indirimi: %35";
             } else if (selectedDiscount === "Yetişkin") {
                 netPrice = price;
-                discountMessage = "Yetişkin fiyatı: %100";
+                discountMessage = "Yetişkin indirimi: %0";
             } else {
                 netPrice = price;
                 discountMessage = "";
             }
-            document.getElementById("netprice").value = netPrice.toFixed(2);
-            var discountMessageContainer = document.getElementById("discountMessageContainer");
+            document.getElementById("netprice").value = netPrice.toFixed(2);//toFixed(2) iki basmaklı ondalıklı sayı yapıyor ve string olarak döndürüyor.
+            var discountMessageContainer = document.getElementById("discountMessageContainer"); //yukarıda belirtilen discountmessage container ına ekliyoruz mesajı.
             discountMessageContainer.innerHTML = "<div class='alert alert-info'>" + discountMessage + "</div>";
         });
 
         document.getElementById("CVV").addEventListener("input", function () {
-            this.value = this.value.replace(/\D/g, '');
+            this.value = this.value.replace(/\D/g, ''); //bütün karakterlerin rakam olmasını sağlıyor. yoksa siliyor.
             if (this.value.length > 3) {
-                this.value = this.value.slice(0, 3);
+                this.value = this.value.slice(0, 3); // eğer yazı üç karakterden büyükse ilk üç karakterini alıyor.
             }
         });
 
         document.getElementById("ExpirationDate").addEventListener("input", function () {
-            var input = this.value.replace(/\D/g, ''); // Sadece sayıları kabul et
+            var input = this.value.replace(/\D/g, '');
             if (input.length > 5) {
-                input = input.slice(0, 5); // Maksimum 5 karakter olacak şekilde sınırla
+                input = input.slice(0, 5); // maksimum 5 karakter olacak.
             }
             if (input.length > 2) {
-                input = input.slice(0, 2) + '/' + input.slice(2); // mm/yy formatını sağla
+                input = input.slice(0, 2) + '/' + input.slice(2); // mm/yy formatını sağlamak için ve araya slash koymak için bu formatı kullanıyoruz.
             }
             this.value = input;
         });
 
         document.getElementById("CreditCardNumber").addEventListener("input", function () {
-            var input = this.value.replace(/\D/g, ''); // Sadece sayıları kabul et
+            var input = this.value.replace(/\D/g, '');
             if (input.length > 16) {
-                input = input.slice(0, 16); // Maksimum 16 karakter olacak şekilde sınırla
+                input = input.slice(0, 16);
             }
-            var formattedInput = input.match(/.{1,4}/g).join('-'); // Her 4 karakterden sonra "-" ekle
+            var formattedInput = input.match(/.{1,4}/g).join('-'); // Bu kod her 4 karakterden sonra "-" ekleyecek.
             this.value = formattedInput;
         });
 
-        // Seat selection
         document.querySelectorAll('.seat').forEach(function (seat) {
-            seat.addEventListener('click', function () {
+            seat.addEventListener('click', function () { // tıklanıldığında koltukların hepsinin arka planı beyaz olacak
                 document.querySelectorAll('.seat').forEach(function (s) {
                     s.style.backgroundColor = 'white';
                 });
-                this.style.backgroundColor = 'blue';
+                this.style.backgroundColor = 'blue';// bir tanesi seçildiğinde mavi olacak.
                 document.getElementById('selectedSeat').value = this.getAttribute('data-seat');
             });
         });
 
         document.getElementById("submitBtn").addEventListener("click", function () {
-            var requiredFields = ["CreditCardNumber", "ExpirationDate", "CVV", "selectedSeat", "discount"];
+            var requiredFields = ["CreditCardNumber", "ExpirationDate", "CVV", "selectedSeat", "discount"]; //ödemenin gerçekleşmesi için bunlar gerekli.
             var emptyFields = requiredFields.filter(function (field) {
                 return !document.getElementById(field).value;
             });
 
             if (emptyFields.length > 0) {
-                alert("Lütfen tüm alanları doldurun: " + emptyFields.join(", "));
+                alert("Lütfen tüm alanları doldurun: " + emptyFields.join(", ")); //join hepsinin arasına virgü koyuyor.
             } else {
                 var form = document.getElementById("paymentForm");
 
-                // Submit the form via AJAX
                 var formData = new FormData(form);
-                fetch(form.action, {
+                fetch(form.action, { //fetch actiondaki URL ye post gönderiyor
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        'X-Requested-With': 'XMLHttpRequest', //isteğin AJAX olduğunu belirtiyor. (asenkron veri alışverişi)(Asynchronous JavaScript and XML)
+                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value //güvenlik için
                     }
-                }).then(response => response.json()).then(data => {
+                }).then(response => response.json()).then(data => { //gelen cevap
                     if (data.success) {
-                        // Ödeme başarılıysa IsSold değerini işaretle
-                        document.getElementById('selectedSeat').value = ''; // Seçilen koltuğu temizle
+                        document.getElementById('selectedSeat').value = ''; // Seçilen koltuğu temizliyor
                         console.log("data.selectedSeat= ", data.selectedSeat);
-                        var selectedSeat = parseInt(data.selectedSeat); // Seçilen koltuğu al
+                        var selectedSeat = parseInt(data.selectedSeat); // sunucudan geleni int e çeviriyor.
                         console.log("SelectedSeat= ", selectedSeat);
-                        if (!isNaN(selectedSeat)) {
-                            // Kırmızı rengi koltuğa uygula
+                        if (!isNaN(selectedSeat)) { //eğer geçerli bir sayı ise
                             applyRedColorToSeat(selectedSeat);
-                            // Diğer işlemler...
                         } else {
                             alert("Geçersiz koltuk numarası!");
                         }
@@ -205,12 +201,10 @@
             }
         }
         document.addEventListener('DOMContentLoaded', function () {
-            // Veritabanından satılan koltukları al
-            fetch('/Tickets/GetSoldSeats') // Örnek bir controller ve action
+            fetch('/Tickets/GetSoldSeats')// Veritabanından satılan koltukları al
                 .then(response => response.json())
                 .then(data => {
-                    // Veritabanından gelen koltuk bilgilerini kullanarak kırmızıya boyayın
-                    data.forEach(seatNumber => {
+                    data.forEach(seatNumber => { // Veritabanından gelen koltuk bilgilerini kullanarak kırmızıya boyayın
                         applyRedColorToSeat(seatNumber);
                     });
                 })
@@ -218,7 +212,6 @@
                     console.error('Veritabanından koltuk bilgileri alınamadı:', error);
                 });
         });
-
     </script>
 }
 

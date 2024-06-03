@@ -50,7 +50,7 @@ namespace CineEase2.Controllers
             {
                 var user = await _userManager.GetUserAsync(User);
 
-                if (model.discount == "Öğrenci")
+                if (model.discount == "Öğrenci") // Discount tipine göre fiyat hesaplama kısımları
                 {
                     model.netprice = model.price * 0.8f;
                 }
@@ -68,25 +68,24 @@ namespace CineEase2.Controllers
                 }
 
                 model.UserId = user.Id;
-                model.IsSold = true;
+                model.IsSold = true; // Eğer bilet alındıysa o koltuğun is sold u databasede 1 olarak gözüküyor. 0 olarak gözükmesi şuan benim projem için söz konusu değil
 
                 _context.Ticket.Add(model);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, selectedSeat = model.SeatNumber, message = "Ödeme başarıyla gerçekleştirildi." });
+                return Json(new { success = true, selectedSeat = model.SeatNumber, message = "Ödeme başarıyla gerçekleştirildi." }); // Database eklemesi doğru bir şekilde yapılırsa mesaj geliyor.
             }
             return Json(new { success = false, message = "Ödeme başarısız. Lütfen tekrar deneyin." });
         }
         [HttpGet]
         public async Task<IActionResult> GetSoldSeats()
         {
-            // Veritabanından satılan koltukları getirin
-            var soldSeats = await _context.Ticket
-                .Where(t => t.IsSold) // Satılan koltukları filtreleyin
-                .Select(t => t.SeatNumber) // Sadece koltuk numaralarını seçin
+            var soldSeats = await _context.Ticket // Veritabanından satılan koltukları getiriyoruz
+                .Where(t => t.IsSold) // Satılan koltukları seçiyoruz aksi ksımı yok zaten
+                .Select(t => t.SeatNumber) // Sadece koltuk numaralarını seçiyoruz
                 .ToListAsync();
 
-            return Json(soldSeats); // Satılan koltuk numaralarını JSON olarak döndürün
+            return Json(soldSeats); // Satılan koltuk numaralarını döndürüyoruz.
         }
         public IActionResult Success()
         {

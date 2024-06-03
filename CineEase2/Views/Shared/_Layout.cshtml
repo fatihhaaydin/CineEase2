@@ -21,7 +21,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated) //kullanıcı giriş yaptı mı yapmadı mı yapmadıysa butonları gösterme
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-light btn-dark" style="margin-left: 15px" asp-area="" asp-controller="Movie" asp-action="Index">Movies </a>
@@ -63,7 +63,7 @@
             });
 
             function doneTyping() {
-                var searchText = $('#searchInput').val().toLowerCase(); // Küçük harfe çevir
+                var searchText = $('#searchInput').val().toLowerCase();
                 console.log(searchText);
                 $('.clickable-photo').each(function () {
                     if (searchText === "goodfellas" || searchText === "the shawshank redemption" || searchText === "the godfather" || searchText === "the dark night" || searchText === "interstaller") {
@@ -73,7 +73,7 @@
                         console.log("Photo Detail = ", photoDetail);
                         console.log(photoDetail.title.toLowerCase())
                         if (searchText == photoDetail.title.toLowerCase()) {
-                            var photoTitle = photoDetail.title.toLowerCase(); // Küçük harfe çevir
+                            var photoTitle = photoDetail.title.toLowerCase();
                             console.log("If içindeki phototitle", photoTitle)
                             console.log("If içindeki photoid", photoId)
                             if (photoTitle.includes(searchText)) {
